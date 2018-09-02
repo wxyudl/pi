@@ -1,0 +1,27 @@
+{
+  "name": "pi",
+  "version": "1.0.0",
+  "description": "树莓派の小玩意儿",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wxyudl/pi.git"
+  },
+  "keywords": [
+    "树莓派"
+  ],
+  "author": "小鱼果",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/wxyudl/pi/issues"
+  },
+  "homepage": "https://github.com/wxyudl/pi#readme",
+  "dependencies": {
+    "koa": "^2.5.2",
+    "koa-socket-2": "^1.0.17",
+    "onoff": "^3.2.1"
+  }
+}
