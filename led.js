@@ -14,11 +14,10 @@ async function close() {
   }
 }
 
-close();
+// close();
 
 // 跑马灯
 function lite(idx) {
-  // 只要 new 就会 `高`
   let l = new Gpio(leds[idx], 'out');
   console.info('GPIO: ' + leds[idx] + ', Value: ' + l.readSync());
   console.info('Value after: ' + l.readSync());
@@ -36,4 +35,4 @@ function lite(idx) {
   }, 200);
 }
 
-// lite(0);
+lite(0);

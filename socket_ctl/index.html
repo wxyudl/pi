@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>Koa-Socket Example</title>
+  <title>LED 控制器</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <style>
@@ -13,22 +13,48 @@
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
       font-family: -apple-system, '.SFNSDisplay-Regular', 'Helvetica Neue', 'Arial', sans-serif;
-      color: #32322C;
+      background-color: #32322C;
+    }
+
+    #ctl {
+      display: flex;
+    }
+
+    #ctl .ctl {
+      display: flex;
+      align-content: flex-start;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+
+    .leds img {
+      width: 50px;
+    }
+
+    .led p {
+      margin: 0;
     }
 
     button {
-      display: block;
-      margin-top: .5em;
-      border: none;
-      border-radius: 4px;
+      margin: 1rem 0;
+      width: 20%;
+      height: 10px;
+      border: 20px solid #323232;
       font-size: 18px;
       font-weight: 600;
       text-align: center;
-      padding: .3em 3em;
       background: #8c8c8c;
       transition: all .177s linear;
       text-decoration: none;
       cursor: pointer;
+      color: #FFF;
+      margin: 1rem;
+      padding: 6px;
+    }
+
+    p button {
+      border: 0;
+      background: none;
     }
 
     button[data-state="1"] {
@@ -61,14 +87,19 @@
 </head>
 
 <body>
-  <button class="led" data-id="1">#1 LED</button>
-  <button class="led" data-id="2">#2 LED</button>
-  <button class="led" data-id="3">#3 LED</button>
-  <button class="led" data-id="4">#4 LED</button>
-  <button class="led" data-id="5">#5 LED</button>
-  <button class="led" data-id="6">#6 LED</button>
-  <button class="led" data-id="7">#7 LED</button>
-
+  <div id="ctl">
+    <div class="ctl">
+      <p style="width: 100%;"><button class="power" data-state="0"><img src="/power_off.svg" width="60" alt="" /></button></p>
+      <button class="btn" data-id="1">1</button>
+      <button class="btn" data-id="2">2</button>
+      <button class="btn" data-id="3">3</button>
+      <button class="btn" data-id="4">4</button>
+      <button class="btn" data-id="5">5</button>
+      <button class="btn" data-id="6">6</button>
+      <button class="btn" data-id="7">7</button>
+    </div>
+  </div>
+  <p style="color: #FFFFFF; text-align: right; opacity: .1;">作者：小鱼果</p>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.2/socket.io.slim.js"></script>
   <script>
     var pi = io.connect('//' + location.host + '/pi');
@@ -76,16 +107,29 @@
       console.log('chat message:', event);
     });
 
-    var ledsBth = document.querySelectorAll('.led');
-    for (let led of ledsBth) {
-      led.addEventListener('click', function (event) {
-        let id = parseInt(led.dataset.id);
-        let state = parseInt(led.dataset.state) || 0;
+    var btns = document.querySelectorAll('.btn');
+    var leds = document.querySelectorAll('.leds img');
+    for (let btn of btns) {
+      btn.addEventListener('click', function (event) {
+        let id = parseInt(btn.dataset.id);
+        let state = parseInt(btn.dataset.state) || 0;
 
-        led.dataset.state = state ^ 1;
+        btn.dataset.state = state ^ 1;
         pi.emit('message', [id, state]);
       });
     }
+
+    var power = document.querySelector('button.power');
+
+    power.addEventListener('click', e => {
+      let state = parseInt(e.target.dataset.state) || 0;
+
+      btns.forEach((btn) => btn.dataset.state = state ^ 1);
+
+      e.target.dataset.state = state ^ 1;
+      e.target.src = `/power_${(state ^ 1 === 1 ? 'on' : 'off')}.svg`;
+      pi.emit('power', state);
+    });
   </script>
 </body>
 

@@ -22,6 +22,7 @@
   "dependencies": {
     "koa": "^2.5.2",
     "koa-socket-2": "^1.0.17",
+    "koa-static": "^5.0.0",
     "onoff": "^3.2.1"
   }
 }

@@ -1,11 +1,13 @@
 const fs = require('fs');
 const path = require('path');
 const Gpio = require('onoff').Gpio;
+const serve = require('koa-static');
 const Koa = require('koa');
 const IO = require('koa-socket-2');
 const app = new Koa();
 const pi = new IO('pi');
 let leds = [17, 27, 22, 10, 9, 11, 19];
+const staticPath = './static';
 
 pi.attach(app);
 
@@ -19,6 +21,7 @@ app.use(async (ctx, next) => {
   console.log(`${ctx.method} ${ctx.url} - ${ms}ms`);
 });
 
+app.use(serve(path.join(__dirname, staticPath)));
 
 /**
  * App handlers
@@ -44,15 +47,19 @@ pi.use(async (ctx, next) => {
  * PI handlers
  */
 pi.on('connection', ctx => {
-  console.log('Joining pi namespace', ctx.socket.id);
+  // console.log('Joining pi namespace', ctx.socket.id);
 });
 
 pi.on('message', ctx => {
-  console.log('pi message received', ctx.data);
   new Gpio(leds[ctx.data[0] - 1], 'high').writeSync(ctx.data[1]);
+});
 
-  // Emits to just this socket
-  ctx.socket.emit('message', 'ok connections:pi:emit');
+pi.on('power', ctx => {
+  for (let led of leds) {
+    let l = new Gpio(led, 'low');
+
+    l.writeSync(ctx.data);
+  }
 });
 
 const PORT = 3000;
