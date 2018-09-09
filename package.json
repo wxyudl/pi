@@ -23,6 +23,7 @@
     "koa": "^2.5.2",
     "koa-socket-2": "^1.0.17",
     "koa-static": "^5.0.0",
-    "onoff": "^3.2.1"
+    "onoff": "^3.2.1",
+    "rpi-dht-sensor": "^0.1.1"
   }
 }
